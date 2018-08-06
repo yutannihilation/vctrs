@@ -54,24 +54,45 @@ vec_cast.NULL <- function(x, to) {
 
 #' @export
 vec_cast.logical <- function(x, to) {
-  if (is_null(x)) {
-    x
-  } else if (is_bare_logical(x)) {
-    x
-  } else if (is_bare_integer(x)) {
-    warn_cast_lossy_vector(x, to, !x %in% c(0L, 1L))
-    vec_coerce_bare(x, "logical")
-  } else if (is_bare_double(x)) {
-    warn_cast_lossy_vector(x, to, !x %in% c(0, 1))
-    vec_coerce_bare(x, "logical")
-  } else if (is_bare_character(x)) {
+  UseMethod("vec_cast.logical")
+}
+
+#' @export
+vec_cast.logical.NULL <- function(x, to) {
+  x
+}
+
+#' @export
+vec_cast.logical.logical <- function(x, to) {
+  x
+}
+
+#' @export
+vec_cast.logical.integer <- function(x, to) {
+  warn_cast_lossy_vector(x, to, !x %in% c(0L, 1L))
+  vec_coerce_bare(x, "logical")
+}
+
+#' @export
+vec_cast.logical.double <- function(x, to) {
+  warn_cast_lossy_vector(x, to, !x %in% c(0, 1))
+  vec_coerce_bare(x, "logical")
+}
+
+#' @export
+vec_cast.logical.charcter <- function(x, to) {
     warn_cast_lossy_vector(x, to, !toupper(x) %in% c("T", "F", "TRUE", "FALSE"))
     vec_coerce_bare(x, "logical")
-  } else if (is.list(x)) {
+}
+
+#' @export
+vec_cast.logical.list <- function(x, to) {
     cast_from_list(x, to)
-  } else {
-    abort_no_cast(x, to)
-  }
+}
+
+#' @export
+vec_cast.logical.default <- function(x, to) {
+  abort_no_cast(x, to)
 }
 
 #' @export
